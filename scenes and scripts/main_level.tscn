@@ -1,0 +1,122 @@
+[gd_scene load_steps=9 format=3 uid="uid://djl0tmiqui4m"]
+
+[ext_resource type="Script" uid="uid://cvucsroiyfosv" path="res://scenes and scripts/main_level.gd" id="1_osahc"]
+[ext_resource type="Texture2D" uid="uid://d3ey1610omikr" path="res://textures/background.png" id="1_psd47"]
+[ext_resource type="Texture2D" uid="uid://bced26f6gm4et" path="res://textures/paddle.png" id="2_c72rd"]
+[ext_resource type="PackedScene" uid="uid://bwvq6f63k1dlx" path="res://scenes and scripts/ball.tscn" id="3_fh68h"]
+[ext_resource type="AudioStream" uid="uid://2dnk5pvdj2dj" path="res://score.wav" id="5_y3bft"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_s3f3x"]
+size = Vector2(20, 630)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ioamo"]
+size = Vector2(1152, 10)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_j5m8x"]
+size = Vector2(19.5, 160)
+
+[node name="main_level" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_osahc")
+
+[node name="LeftBallDetector" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LeftBallDetector"]
+position = Vector2(-10, 324)
+shape = SubResource("RectangleShape2D_s3f3x")
+
+[node name="RightBallDetector" type="Area2D" parent="."]
+position = Vector2(1172, 1)
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RightBallDetector"]
+position = Vector2(-10, 324)
+shape = SubResource("RectangleShape2D_s3f3x")
+
+[node name="UpperWall" type="StaticBody2D" parent="."]
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="UpperWall"]
+position = Vector2(576, 5)
+shape = SubResource("RectangleShape2D_ioamo")
+
+[node name="LowerWall" type="StaticBody2D" parent="."]
+position = Vector2(0, 638)
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LowerWall"]
+position = Vector2(576, 5)
+shape = SubResource("RectangleShape2D_ioamo")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="background" type="TextureRect" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_psd47")
+
+[node name="LeftPadScore" type="Label" parent="CanvasLayer"]
+offset_left = 151.0
+offset_top = 13.0
+offset_right = 197.0
+offset_bottom = 123.0
+theme_override_font_sizes/font_size = 80
+text = "0"
+
+[node name="RightPadScore" type="Label" parent="CanvasLayer"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -151.0
+offset_top = 13.0
+offset_right = -105.0
+offset_bottom = 123.0
+grow_horizontal = 0
+theme_override_font_sizes/font_size = 80
+text = "0
+"
+
+[node name="LeftPaddle" type="CharacterBody2D" parent="CanvasLayer"]
+position = Vector2(9, 325)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CanvasLayer/LeftPaddle"]
+position = Vector2(17, 0)
+shape = SubResource("RectangleShape2D_j5m8x")
+
+[node name="Sprite2D" type="Sprite2D" parent="CanvasLayer/LeftPaddle"]
+position = Vector2(14, 0)
+scale = Vector2(5, 5)
+texture = ExtResource("2_c72rd")
+
+[node name="RightPaddle" type="CharacterBody2D" parent="CanvasLayer"]
+position = Vector2(1114, 326)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CanvasLayer/RightPaddle"]
+position = Vector2(11.25, 0)
+shape = SubResource("RectangleShape2D_j5m8x")
+
+[node name="Sprite2D" type="Sprite2D" parent="CanvasLayer/RightPaddle"]
+position = Vector2(14, 0)
+scale = Vector2(5, 5)
+texture = ExtResource("2_c72rd")
+
+[node name="Ball" parent="CanvasLayer" instance=ExtResource("3_fh68h")]
+position = Vector2(579, 337)
+
+[node name="scoreSound" type="AudioStreamPlayer" parent="."]
+process_mode = 3
+stream = ExtResource("5_y3bft")
+
+[connection signal="body_entered" from="LeftBallDetector" to="." method="_on_left_ball_detector_body_entered"]
+[connection signal="body_entered" from="RightBallDetector" to="." method="_on_right_ball_detector_body_entered"]
